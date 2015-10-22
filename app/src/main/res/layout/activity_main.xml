@@ -9,14 +9,4 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!" />
-
-    <Button
-        android:text="Play"
-        android:onClick="playSound"
-        android:layout_width="48dp"
-        android:layout_height="48dp" />
 </LinearLayout>
