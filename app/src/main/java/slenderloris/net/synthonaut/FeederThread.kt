@@ -9,14 +9,14 @@ public class FeederThread {
 
     private var go : Boolean = true
 
-    public constructor(track : AudioTrack, waver: Waver) {
+    public constructor(track : AudioTrack, waveSource: WaveSource) {
         val waitFrames = track.bufferSizeInFrames / 2
         val waitTime = ( 1000 * waitFrames / track.sampleRate ).toLong()
         thread = Thread() {
             while(go) {
-                buffer[0] = waver.sample().toShort()
+                buffer[0] = waveSource.getSample().toShort()
                 if(track.write(buffer, 0, 1)==1) {
-                    waver.next()
+                    waveSource.next()
                 }
                 else {
                     Thread.sleep(waitTime)

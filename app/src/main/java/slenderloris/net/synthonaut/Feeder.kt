@@ -7,16 +7,16 @@ public class Feeder {
     private var thread : FeederThread? = null
 
     private val track: AudioTrack
-    private val waver: Waver
+    private val waveSource: WaveSource
 
-    constructor(audioTrack : AudioTrack, waver : Waver) {
+    constructor(audioTrack : AudioTrack, oscillator: WaveSource) {
         this.track = audioTrack
-        this.waver = waver
+        this.waveSource = oscillator
     }
 
     public fun start() {
         if(thread==null) {
-            thread = FeederThread(track, waver)
+            thread = FeederThread(track, waveSource)
             thread?.start()
         }
     }
@@ -27,3 +27,4 @@ public class Feeder {
     }
 
 }
+

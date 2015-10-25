@@ -9,14 +9,24 @@ import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity {
 
     private val frameSize = 2
     private val framesInBuffer = audioFramesPerSecond441khz / 100
     private val bufferSize = framesInBuffer * frameSize
     private val audioTrack = AudioTrack(AudioManager.STREAM_MUSIC, audioFramesPerSecond441khz, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT, bufferSize, AudioTrack.MODE_STREAM)
-    private val waver = Waver()
-    private val feeder = Feeder(audioTrack, waver)
+
+    private val oscillator : Oscillator
+    private val multiplier: Multiplier
+    private val feeder : Feeder
+
+    public constructor() {
+        oscillator = Oscillator()
+        multiplier = Multiplier(oscillator)
+        // todo add adder
+        feeder = Feeder(audioTrack, multiplier)
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,8 +35,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun start() {
         stop()
-        waver.amplitude = 0.8
-        waver.frequency = 440.0
+        multiplier.multiplier = 0.8
+        oscillator.frequency = 440.0
         feeder.start()
         audioTrack.play()
     }
@@ -56,10 +66,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun touchMove(x: Float, y: Float) {
-        waver.frequency += ( x - touchX )
-        waver.amplitude += ( y - touchY ) / 1000
-        waver.amplitude = Math.min(1.0, waver.amplitude)
-        waver.amplitude = Math.max(0.0, waver.amplitude)
+        oscillator.frequency += ( x - touchX )
+        multiplier.multiplier += ( y - touchY ) / 1000
+        multiplier.multiplier = Math.min(1.0, multiplier.multiplier)
+        multiplier.multiplier = Math.max(0.0, multiplier.multiplier)
         touchX = x
         touchY = y
     }
