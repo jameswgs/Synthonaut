@@ -15,16 +15,11 @@ class MainActivity : AppCompatActivity {
     private val framesInBuffer = audioFramesPerSecond441khz / 100
     private val bufferSize = framesInBuffer * frameSize
     private val audioTrack = AudioTrack(AudioManager.STREAM_MUSIC, audioFramesPerSecond441khz, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT, bufferSize, AudioTrack.MODE_STREAM)
-
-    private val oscillator : Oscillator
-    private val multiplier: Multiplier
     private val feeder : Feeder
 
     public constructor() {
-        oscillator = Oscillator()
-        multiplier = Multiplier(oscillator)
-        // todo add adder
-        feeder = Feeder(audioTrack, multiplier)
+        val out = FrequencyModulator( Oscillator(0.0), Adder( Value(440.0), Multiplier( Oscillator(10.0), Value(220.0) ) ) )
+        feeder = Feeder(audioTrack, Multiplier(out, Adder( Value(0.6), Multiplier( Oscillator(4.0), Value(0.4) ) ) ) )
     }
 
 
@@ -35,8 +30,6 @@ class MainActivity : AppCompatActivity {
 
     private fun start() {
         stop()
-        multiplier.multiplier = 0.8
-        oscillator.frequency = 440.0
         feeder.start()
         audioTrack.play()
     }
@@ -66,10 +59,10 @@ class MainActivity : AppCompatActivity {
     }
 
     private fun touchMove(x: Float, y: Float) {
-        oscillator.frequency += ( x - touchX )
-        multiplier.multiplier += ( y - touchY ) / 1000
-        multiplier.multiplier = Math.min(1.0, multiplier.multiplier)
-        multiplier.multiplier = Math.max(0.0, multiplier.multiplier)
+//        oscillator.frequency += ( x - touchX )
+//        multiplier.multiplier += ( y - touchY ) / 1000
+//        multiplier.multiplier = Math.min(1.0, multiplier.multiplier)
+//        multiplier.multiplier = Math.max(0.0, multiplier.multiplier)
         touchX = x
         touchY = y
     }

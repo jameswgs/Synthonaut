@@ -14,7 +14,8 @@ public class FeederThread {
         val waitTime = ( 1000 * waitFrames / track.sampleRate ).toLong()
         thread = Thread() {
             while(go) {
-                buffer[0] = waveSource.getSample().toShort()
+                val sample = waveSource.getSample() * Short.MAX_VALUE.toDouble()
+                buffer[0] = sample.toShort()
                 if(track.write(buffer, 0, 1)==1) {
                     waveSource.next()
                 }
@@ -23,6 +24,7 @@ public class FeederThread {
                 }
             }
         }
+        thread.priority = Thread.MAX_PRIORITY
     }
 
     fun start() {

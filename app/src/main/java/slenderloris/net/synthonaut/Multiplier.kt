@@ -3,20 +3,20 @@ package slenderloris.net.synthonaut
 class Multiplier : WaveSource {
 
     private val waveSource: WaveSource
+    private var multiplier: WaveSource
 
-    public var multiplier = 1.0
-
-    public constructor(waveSource: WaveSource) {
-        this.waveSource  = waveSource
+    public constructor(waveSource: WaveSource, multiplier: WaveSource) {
+        this.waveSource = waveSource
+        this.multiplier = multiplier
     }
 
     override fun getSample(): Double {
-        if(multiplier==0.0) return 0.0
-        return waveSource.getSample() * multiplier
+        return waveSource.getSample() * multiplier.getSample()
     }
 
     override fun next() {
         waveSource.next()
+        multiplier.next()
     }
 
 }
